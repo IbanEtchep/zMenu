@@ -14,6 +14,8 @@ public class ItemButton {
     private Consumer<InventoryClickEvent> onMiddleClick;
     private Consumer<InventoryClickEvent> onLeftClick;
     private Consumer<InventoryClickEvent> onRightClick;
+    private Consumer<InventoryClickEvent> onShiftLeftClick;
+    private Consumer<InventoryClickEvent> onShiftRightClick;
 
     public ItemButton(ItemStack displayItem, int slot) {
         super();
@@ -51,6 +53,16 @@ public class ItemButton {
         return this;
     }
 
+    public ItemButton setShiftLeftClick(Consumer<InventoryClickEvent> onShiftLeftClick) {
+        this.onShiftLeftClick = onShiftLeftClick;
+        return this;
+    }
+
+    public ItemButton setShiftRightClick(Consumer<InventoryClickEvent> onShiftRightClick) {
+        this.onShiftRightClick = onShiftRightClick;
+        return this;
+    }
+
     public ItemStack getDisplayItem() {
         return displayItem;
     }
@@ -66,19 +78,36 @@ public class ItemButton {
             this.onClick.accept(event);
         }
 
-        if ((event.getClick().equals(ClickType.MIDDLE) || event.getClick().equals(ClickType.DROP))
-                && this.onMiddleClick != null) {
-
-            this.onMiddleClick.accept(event);
-
-        } else if (event.getClick().equals(ClickType.RIGHT) && this.onRightClick != null) {
-
-            this.onRightClick.accept(event);
-
-        } else if (event.getClick().equals(ClickType.LEFT) && this.onLeftClick != null) {
-
-            this.onLeftClick.accept(event);
-
+        ClickType clickType = event.getClick();
+        switch (clickType) {
+            case MIDDLE:
+            case DROP:
+                if (this.onMiddleClick != null) {
+                    this.onMiddleClick.accept(event);
+                }
+                break;
+            case RIGHT:
+                if (this.onRightClick != null) {
+                    this.onRightClick.accept(event);
+                }
+                break;
+            case LEFT:
+                if (this.onLeftClick != null) {
+                    this.onLeftClick.accept(event);
+                }
+                break;
+            case SHIFT_LEFT:
+                if (this.onShiftLeftClick != null) {
+                    this.onShiftLeftClick.accept(event);
+                }
+                break;
+            case SHIFT_RIGHT:
+                if (this.onShiftRightClick != null) {
+                    this.onShiftRightClick.accept(event);
+                }
+                break;
+            default:
+                break;
         }
     }
 
